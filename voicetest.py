@@ -73,7 +73,7 @@ def ai_initiate_chat(chat_history):
     messages.insert(0, {"role": "system", "content": ai_personality})
     messages.append({"role": "user", "content": "Can you start the conversation?"})
 
-    response = chat(model="llama3", messages=messages)
+    response = chat(model="llama3.2", messages=messages)
     return response['message']['content']
 
 # Start chat session
@@ -114,7 +114,7 @@ def main():
         })
 
         # AI response
-        response = chat(model="llama3", messages=[{"role": msg["role"], "content": msg["content"]} for msg in chat_history])
+        response = chat(model="llama3.2", messages=[{"role": msg["role"], "content": msg["content"]} for msg in chat_history])
         ai_response = response['message']['content']
 
         chat_history.append({
