@@ -123,7 +123,7 @@ def main():
             "content": ai_response
         })
 
-        print(f"LUNA: {ai_response}")
+        print(f"LUNA: {ai_response}\n")
         speak(ai_response)
 
         save_chat_history(chat_history)
