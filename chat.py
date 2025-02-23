@@ -32,7 +32,7 @@ def chat_session():
     while True:
         print("Press ESC to type or Space to record your voice.")
         while True:
-            event = keyboard.read_event(suppress=True)  # This ensures the script only detects keys when active
+            event = keyboard.read_event(suppress=False)  # This ensures the script only detects keys when active
             if event.event_type == "down":
                 if event.name == "esc":
                     user_input = input("Type your message: ")
@@ -56,16 +56,16 @@ def chat_session():
         system_content = []
         
         if any(word in user_input.lower() for word in ["time", "clock"]):
-            system_content.append(f"The current date and time is {current_time}.")
+            system_content.append(f"The current time is {current_time}. You should be aware of time.")
 
         if any(word in user_input.lower() for word in ["date"]):
-            system_content.append(f"The current date and time is {current_time}.")
+            system_content.append(f"The current date is {current_date}. You should be aware of date.")
         
         if any(word in user_input.lower() for word in ["location", "where we at", "where am i"]):
-            system_content.append(f"The location is {g.city}, {g.state}, {g.country}.")
+            system_content.append(f"The location is {g.city}, {g.state}, {g.country}. Don't mention this unless the user ask for.")
         
         if "weather" in user_input.lower():
-            system_content.append(f"The weather now is {weather_info}.")
+            system_content.append(f"The weather now is {weather_info}. Don't mention this unless the user ask for.")
         
         if system_content:
             chat_history.append({"role": "system", "content": " ".join(system_content)})
