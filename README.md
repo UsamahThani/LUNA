@@ -1,4 +1,6 @@
-# Project Setup
+# LUNA
+
+Project initiated on February 6, 2025
 
 ## Prerequisites
 Before cloning this repository, ensure you have the following dependencies installed:
