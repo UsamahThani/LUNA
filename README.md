@@ -52,3 +52,15 @@ Ollama is used to run AI models. After installation, also install the **Llama3.2
    ```sh
    python main.py
    
+---
+## Improvements
+
+As for 24/2/2025, I have added fetures like:
+1. Local memory: stored all of the chat logs in `chat_history,json` so the AI model could read the histry for more context.
+2. Date and time: as the based model is not have this feature, I added the date and time feature whenever user ask for date or time.
+3. Text to speech: cloning voice using OpenVoice and run it in server to make the AI speak.
+4. Speech to text: transcribe the audio using whisper so the AI interaction more seemless.
+5. Live 2D model: using Vtube Studio to run L2D model and using VBA drivers to make L2D model's mouth moving as the AI speaking
+6. Weather: AI will be aware of current location weather by implementing simple weather API.
+
+Demo Video: [Twitter Post](https://shorturl.at/n4v8n)
