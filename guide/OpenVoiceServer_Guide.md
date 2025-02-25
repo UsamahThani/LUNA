@@ -6,7 +6,7 @@ This guide provides step-by-step instructions for installing and running the Ope
 
 ## Prerequisites
 
-- Ubuntu OS
+- Ubuntu OS or WSL2 (Window)
 - Conda installed ([Installation Guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html))
 - Git installed
 
@@ -22,7 +22,14 @@ conda activate openvoice
 ### 2. Clone the Repository
 
 ```sh
-git clone https://github.com/ValyrianTech/OpenVoice_server.git
+git https://github.com/UsamahThani/OpenVoice_server.git #sam use this
+cd OpenVoice_server
+```
+
+or
+
+```sh
+git https://github.com/ValyrianTech/OpenVoice_server.git
 cd OpenVoice_server
 ```
 
@@ -31,12 +38,12 @@ cd OpenVoice_server
 ```sh
 pip install -r requirements.txt
 pip install -e .
-pip install git+https://github.com/myshell-ai/MeloTTS.git
 ```
 
 ### 4. Download Additional Resources
 
 ```sh
+pip install git+https://github.com/myshell-ai/MeloTTS.git
 python -m unidic download
 ```
 
