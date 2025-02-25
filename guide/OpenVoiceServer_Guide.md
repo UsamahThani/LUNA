@@ -54,7 +54,7 @@ cd openvoice
 ```
 
 Get checkpoints folder from [here](https://myshell-public-repo-host.s3.amazonaws.com/openvoice/checkpoints_1226.zip) and [here](https://myshell-public-repo-host.s3.amazonaws.com/openvoice/checkpoints_v2_0417.zip).
-Extract and name `checkpoints` and `checkpoints_v2`
+Extract and name `checkpoints` and `checkpoints_v2`.
 
 ```sh
 python -c "import openvoice_server; print(dir(openvoice_server))"
