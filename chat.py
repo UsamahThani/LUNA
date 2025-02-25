@@ -8,40 +8,27 @@ from weather import get_weather
 from config import CHAT_HISTORY_FILE, AI_PERSONALITY, modelname
 from ollama import chat
 
-# def load_ai_personality():
-#     try:
-#         with open(AI_PERSONALITY, "r", encoding="utf-8") as file:
-#             return file.read().strip()
-#     except Exception as e:
-#         print(f"Error loading AI personality: {e}")
-#         return "I am a helpful AI assistant."
+def load_ai_personality():
+    with open(AI_PERSONALITY, "r", encoding="utf-8") as file:
+        return file.read().strip()
 
 def load_chat_history():
-    try:
-        if CHAT_HISTORY_FILE.exists():
-            with open(CHAT_HISTORY_FILE, "r", encoding="utf-8") as file:
-                return json.load(file)
-        return []
-    except Exception as e:
-        print(f"Error loading chat history: {e}")
-        return []
+    if CHAT_HISTORY_FILE.exists():
+        with open(CHAT_HISTORY_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    return []
 
 def save_chat_history(history):
-    try:
-        with open(CHAT_HISTORY_FILE, "w", encoding="utf-8") as file:
-            json.dump(history, file, indent=4)
-        print("Chat history saved successfully.")
-    except Exception as e:
-        print(f"Error saving chat history: {e}")
+    with open(CHAT_HISTORY_FILE, "w", encoding="utf-8") as file:
+        json.dump(history, file, indent=4)
 
 def chat_session():
-    # Load chat history and personality
     chat_history = load_chat_history()
-    # ai_personality = load_ai_personality()
+    ai_personality = load_ai_personality()
 
-    # # Ensure the system message with personality is always present at the start
-    # if not any(msg["role"] == "system" and ai_personality in msg["content"] for msg in chat_history):
-    #     chat_history.insert(0, {"role": "system", "content": ai_personality})
+    # Ensure the AI personality is set at the start of the session
+    if not chat_history or chat_history[0]["role"] != "system":
+        chat_history.insert(0, {"role": "system", "content": ai_personality})
 
     while True:
         print("Press ESC to type or Space to record your voice.")
@@ -59,7 +46,7 @@ def chat_session():
 
         if user_input.lower() == "exit":
             print("Chat saved. Goodbye!")
-            save_chat_history(chat_history)
+            save_chat_history(chat_history)  # Save history before exiting
             break
 
         current_time = datetime.now().strftime("%H:%M:%S")
@@ -70,37 +57,31 @@ def chat_session():
         system_content = []
 
         if any(word in user_input.lower() for word in ["time", "clock"]):
-            system_content.append(f"The current time is {current_time}.")
+            system_content.append(f"The current time is {current_time}. You should be aware of time.")
 
-        if "date" in user_input.lower():
-            system_content.append(f"The current date is {current_date}.")
+        if any(word in user_input.lower() for word in ["date"]):
+            system_content.append(f"The current date is {current_date}. You should be aware of date.")
 
         if any(word in user_input.lower() for word in ["location", "where we at", "where am i"]):
-            system_content.append(f"You are in {g.city}, {g.state}, {g.country}.")
+            system_content.append(f"The location is {g.city}, {g.state}, {g.country}. Don't mention this unless the user asks for it.")
 
         if "weather" in user_input.lower():
-            system_content.append(f"The weather now is {weather_info}.")
+            system_content.append(f"The weather now is {weather_info}. Don't mention this unless the user asks for it.")
 
-        # Append system content if there’s any
         if system_content:
             chat_history.append({"role": "system", "content": " ".join(system_content)})
 
-        # Append user message
-        chat_history.append({"role": "user", "content": user_input, "timestamp": current_time})
+        # Add user input to chat history
+        chat_history.append({"timestamp": current_time, "role": "user", "content": user_input})
 
-        # Prepare messages for Ollama (exclude timestamps from content)
+        # Pass complete chat history (excluding timestamps) to AI
         messages = [{"role": msg["role"], "content": msg["content"]} for msg in chat_history]
 
-        # Call the chat model
-        try:
-            response = chat(model=modelname, messages=messages)
-            ai_response = response['message']['content']
-        except Exception as e:
-            ai_response = f"Sorry, I encountered an error: {e}"
-            print(f"Chat error: {e}")
+        response = chat(model=modelname, messages=messages)
+        ai_response = response['message']['content']
 
-        # Append AI response
-        chat_history.append({"role": "assistant", "content": ai_response, "timestamp": current_time})
+        # Append AI response to history
+        chat_history.append({"timestamp": current_time, "role": "assistant", "content": ai_response})
 
         print(f"\nLUNA: {ai_response}\n")
         speak(ai_response)
