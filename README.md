@@ -8,6 +8,7 @@ Before cloning this repository, ensure you have the following dependencies insta
 ### 1. OpenVoiceServer (TTS)
 OpenVoiceServer is a high-quality Text-to-Speech (TTS) system using FastAPI. For optimal performance, run it on a separate device using WSL.
 - **Repository:** [OpenVoiceServer](https://github.com/ValyrianTech/OpenVoice_server)
+- **Guide:** [Setup in wsl](https://github.com/UsamahThani/LUNA/blob/main/guide/OpenVoiceServer_Guide.md)
 
 ### 2. CuDNN (for Faster Whisper)
 CuDNN is necessary for running Faster Whisper efficiently.
