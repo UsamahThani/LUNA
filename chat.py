@@ -84,5 +84,9 @@ def chat_session():
         chat_history.append({"timestamp": current_time, "role": "assistant", "content": ai_response})
 
         print(f"\nLUNA: {ai_response}\n")
-        speak(ai_response)
+        
+        # Attempt to speak, but continue even if it fails
+        if not speak(ai_response):
+            print("Text-to-speech failed, continuing in text-only mode.")
+        
         save_chat_history(chat_history)
