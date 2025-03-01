@@ -5,12 +5,8 @@ from datetime import datetime
 from tts import speak
 from stt import record_audio, transcribe_audio
 from weather import get_weather
-from config import CHAT_HISTORY_FILE, AI_PERSONALITY, modelname
+from config import CHAT_HISTORY_FILE, modelname
 from ollama import chat
-
-def load_ai_personality():
-    with open(AI_PERSONALITY, "r", encoding="utf-8") as file:
-        return file.read().strip()
 
 def load_chat_history():
     if CHAT_HISTORY_FILE.exists():
@@ -24,30 +20,25 @@ def save_chat_history(history):
 
 def chat_session():
     chat_history = load_chat_history()
-    ai_personality = load_ai_personality()
-
-    # Ensure the AI personality is set at the start of the session
-    if not chat_history or chat_history[0]["role"] != "system":
-        chat_history.insert(0, {"role": "system", "content": ai_personality})
 
     while True:
-        print("Press ESC to type or Space to record your voice.")
+        print("Press 'Ctrl + Shift + T' to type or 'Ctrl + Shift + R' to record your voice.")
         while True:
-            event = keyboard.read_event(suppress=False)
-            if event.event_type == "down":
-                if event.name == "esc":
-                    user_input = input("Type your message: ")
-                    break
-                elif event.name == "space":
-                    audio_file = record_audio()
-                    user_input = transcribe_audio(audio_file)
-                    print(f"\nYou: {user_input}\n")
-                    break
+            if keyboard.is_pressed("ctrl+shift+t"):  # Ctrl + Shift + T for typing
+                user_input = input("Type your message: ")
+                break
+            elif keyboard.is_pressed("ctrl+shift+r"):  # Ctrl + Shift + R for recording
+                audio_file = record_audio()
+                user_input = transcribe_audio(audio_file)
+                print(f"\nYou: {user_input}\n")
+                break
+            elif keyboard.is_pressed("esc"):
+                print("Chat saved. Goodbye!")
+                save_chat_history(chat_history)
+                return
 
-        if user_input.lower() == "exit":
-            print("Chat saved. Goodbye!")
-            save_chat_history(chat_history)  # Save history before exiting
-            break
+        if user_input is None:
+            continue
 
         current_time = datetime.now().strftime("%H:%M:%S")
         current_date = datetime.now().strftime("%Y-%m-%d")
@@ -68,9 +59,6 @@ def chat_session():
         if "weather" in user_input.lower():
             system_content.append(f"The weather now is {weather_info}. Don't mention this unless the user asks for it.")
 
-        if system_content:
-            chat_history.append({"role": "system", "content": " ".join(system_content)})
-
         # Add user input to chat history
         chat_history.append({"timestamp": current_time, "role": "user", "content": user_input})
 
@@ -85,8 +73,14 @@ def chat_session():
 
         print(f"\nLUNA: {ai_response}\n")
         
-        # Attempt to speak, but continue even if it fails
-        if not speak(ai_response):
+        # Attempt to speak, and check if playback was interrupted
+        success, playback_completed = speak(ai_response)
+        if not success:
             print("Text-to-speech failed, continuing in text-only mode.")
+        elif not playback_completed:
+            system_content.append("User just mute/skip your voice. How rude. You should scold him.")
+
+        if system_content:
+            chat_history.append({"role": "system", "content": " ".join(system_content)})
         
         save_chat_history(chat_history)
