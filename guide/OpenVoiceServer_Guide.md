@@ -22,14 +22,14 @@ conda activate openvoice
 ### 2. Clone the Repository
 
 ```sh
-git https://github.com/UsamahThani/OpenVoice_server.git #sam use this
+git clone https://github.com/UsamahThani/OpenVoice_server.git #sam use this
 cd OpenVoice_server
 ```
 
 or
 
 ```sh
-git https://github.com/ValyrianTech/OpenVoice_server.git
+git clone https://github.com/ValyrianTech/OpenVoice_server.git
 cd OpenVoice_server
 ```
 
